@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        #map {
+            width: 2930px;
+            height: 1914px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/ne_10m_airportsne_10m_airportsshp_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[-117.42993325176009,-186.88140337028568],[125.51920275623691,185.1662275038854]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_ne_10m_airportsne_10m_airportsshp_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">type</th>\
+                        <td>' + (feature.properties['type'] !== null ? autolinker.link(feature.properties['type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td>' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">wikipedia</th>\
+                        <td>' + (feature.properties['wikipedia'] !== null ? autolinker.link(feature.properties['wikipedia'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_ne_10m_airportsne_10m_airportsshp_1_0(feature) {
+            switch(String(feature.properties['type'])) {
+                case 'major':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,18,32,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'major and military':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(37,210,86,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'mid':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.8,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,209,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'mid and military':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(112,215,65,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'military':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(205,76,91,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'military major':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(104,97,201,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'military mid':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,71,239,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'small':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 3.2,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,44,170,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'spaceport':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(196,208,60,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NULL':
+                    return {
+                pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,142,70,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_ne_10m_airportsne_10m_airportsshp_1');
+        map.getPane('pane_ne_10m_airportsne_10m_airportsshp_1').style.zIndex = 401;
+        map.getPane('pane_ne_10m_airportsne_10m_airportsshp_1').style['mix-blend-mode'] = 'normal';
+        var layer_ne_10m_airportsne_10m_airportsshp_1 = new L.geoJson(json_ne_10m_airportsne_10m_airportsshp_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ne_10m_airportsne_10m_airportsshp_1',
+            layerName: 'layer_ne_10m_airportsne_10m_airportsshp_1',
+            pane: 'pane_ne_10m_airportsne_10m_airportsshp_1',
+            onEachFeature: pop_ne_10m_airportsne_10m_airportsshp_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_ne_10m_airportsne_10m_airportsshp_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_ne_10m_airportsne_10m_airportsshp_1);
+        map.addLayer(layer_ne_10m_airportsne_10m_airportsshp_1);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'ne_10m_airports — ne_10m_airports.shp<br /><table><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_major0.png" /></td><td>major</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_majorandmilitary1.png" /></td><td>major and military</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_mid2.png" /></td><td>mid</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_midandmilitary3.png" /></td><td>mid and military</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_military4.png" /></td><td>military</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_militarymajor5.png" /></td><td>military major</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_militarymid6.png" /></td><td>military mid</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_small7.png" /></td><td>small</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_spaceport8.png" /></td><td>spaceport</td></tr><tr><td style="text-align: center;"><img src="legend/ne_10m_airportsne_10m_airportsshp_1_9.png" /></td><td></td></tr></table>': layer_ne_10m_airportsne_10m_airportsshp_1,"OSM Standard": layer_OSMStandard_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_ne_10m_airportsne_10m_airportsshp_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'name'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+</html>
